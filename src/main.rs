@@ -5,12 +5,13 @@ use sqlx::mysql::MySqlPool;
 use std::env;
 use tower_http::services::ServeDir;
 
+mod db;
 mod error;
 mod handlers;
+mod models;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    println!("Started");
     // read .env file
     dotenv().ok();
 
