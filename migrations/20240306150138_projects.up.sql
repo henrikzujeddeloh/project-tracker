@@ -2,7 +2,8 @@
 CREATE TABLE IF NOT EXISTS projects
 (
     id          BIGINT  UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    catagory    TEXT    NOT NULL,
+    name        TEXT    NOT NULL DEFAULT "New Project",
+    category    TEXT    NOT NULL,
     position    BIGINT  UNSIGNED NOT NULL,
     status      BIGINT  UNSIGNED NOT NULL DEFAULT 0,
     notes       TEXT,
