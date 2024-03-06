@@ -2,35 +2,15 @@
 <html lang="en">
 
 <head>
-    <!-- <link href="/css/output.css" rel="stylesheet" /> -->
     <meta charset="UTF-8" />
+    <link href="/css/output.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Tracker</title>
 </head>
 
 <body>
-    <h1>Project Tracker</h1>
-    {% for project in projects %}
-        {% if project.category == "Personal" %}
-    {{ project.id }} - {{ project.name}}
-        {% endif %}
-    {% endfor %}
-    <form action="/add" method="get">
-        <div><label for="name">Personal: </label></div>
-        <div><input type="text" id="name" name="name" /></div>
-        <input type="hidden" id="category" name="category" value="Personal" /></div>
-        <div><input type="submit" value="Submit" /></div>
-    </form>
-    {% for project in projects %}
-        {% if project.category == "Uni" %}
-    {{ project.id }} - {{ project.name}}
-        {% endif %}
-    {% endfor %}
-    <form action="/add" method="get">
-        <div><label for="name">Uni: </label></div>
-        <div><input type="text" id="name" name="name" /></div>
-        <input type="hidden" id="category" name="category" value="Uni" /></div>
-        <div><input type="submit" value="Submit" /></div>
-    </form>
+    <h1 class="text-3xl font-bold underline">Project Tracker</h1>
+    {% include "list.html" %}
 </body>
 
 </html>

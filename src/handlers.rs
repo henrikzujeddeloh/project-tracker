@@ -23,7 +23,6 @@ pub async fn index_handler(
     return Ok(IndexResponse { projects: project_list });
 }
 
-// query for adding new task
 #[derive(Deserialize, Debug)]
 pub struct AddQuery {
     pub name: String,
@@ -36,6 +35,23 @@ pub async fn add_handler(
     Query(query): Query<AddQuery>,
 ) -> Result<IndexResponse, error::AppError> {
     db::add_project(&pool, query.name, query.category).await?;
+    let project_list = db::get_projects(&pool).await?;
+    return Ok(IndexResponse { projects: project_list });
+}
+
+
+#[derive(Deserialize, Debug)]
+pub struct DeleteQuery {
+    pub id: u64,
+    pub category: String,
+}
+
+#[axum_macros::debug_handler]
+pub async fn delete_handler(
+    State(pool): State<MySqlPool>,
+    Query(query): Query<DeleteQuery>,
+) -> Result<IndexResponse, error::AppError> {
+    db::delete_project(&pool, query.id, query.category).await?;
     let project_list = db::get_projects(&pool).await?;
     return Ok(IndexResponse { projects: project_list });
 }

@@ -23,6 +23,7 @@ async fn main() -> anyhow::Result<()> {
     let app = Router::new()
         .route("/", get(handlers::index_handler))
         .route("/add", get(handlers::add_handler))
+        .route("/delete", get(handlers::delete_handler))
         .nest_service("/css", ServeDir::new("css"))
         .with_state(pool);
 
