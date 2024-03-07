@@ -5,7 +5,7 @@
         {% if project.category == category_name %}
         <li class="flex justify-between items-center border-b py-2">
             <span class="text-left">{{ project.name }} </span>
-            <form action="/delete" method="GET" class="inline">
+            <form action="/delete" method="POST" class="inline">
                 <input type="hidden" name="id" value="{{ project.id }}" />
                 <input type="hidden" name="category" value="{{ category_name }}" />
                 <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">
@@ -17,7 +17,7 @@
         {% endfor %}
     </ul>
 
-    <form action=" /add" method="get" class="mt-4 flex items-center">
+    <form action="/add" method="POST" class="mt-4 flex items-center">
         <label for="name">Project Name: </label>
         <input type="text" id="name" name="name" class="ml-2 border border-gray-300 rounded-md px-2 py-1" />
         <input type="hidden" id="category" name="category" value="{{ category_name }}" />

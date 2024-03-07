@@ -12,6 +12,8 @@ pub async fn get_projects(pool: &MySqlPool) -> anyhow::Result<Vec<models::Projec
     )
     .fetch_all(pool)
     .await?;
+
+    println!("Database: fetched {} projects", projects.len());
     Ok(projects)
 }
 
@@ -52,7 +54,7 @@ pub async fn add_project(pool: &MySqlPool, name: String, category: String) -> an
     .await?
     .last_insert_id();
 
-    println!("Database: added: {} with id {}", name, project_id);
+    println!("Database: added {} to {} at position {} with id {}", name, category, position, project_id);
 
     Ok(project_id)
 }
@@ -62,8 +64,9 @@ pub async fn delete_project(pool: &MySqlPool, id: u64, category: String) -> anyh
 
     // find position of the project to be deleted
     let deleted_project_position = sqlx::query!(
-        r#"SELECT position FROM projects
-        WHERE id = ?
+        r#"
+            SELECT position FROM projects
+            WHERE id = ?
         "#,
         id
     )
@@ -96,7 +99,7 @@ pub async fn delete_project(pool: &MySqlPool, id: u64, category: String) -> anyh
 
     transaction.commit().await?;
 
-    println!("Database: deleted project with id: {}", id);
+    println!("Database: deleted project from {} at position {} with id: {}", category, deleted_project_position, id);
 
     Ok(())
 }
