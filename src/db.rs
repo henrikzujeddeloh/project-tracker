@@ -2,6 +2,7 @@ use sqlx::mysql::MySqlPool;
 
 use crate::models;
 
+// get all projects from database
 pub async fn get_projects(pool: &MySqlPool) -> anyhow::Result<Vec<models::Project>> {
     let projects = sqlx::query_as!(
         models::Project,
@@ -32,9 +33,7 @@ pub async fn get_highest_position_by_category(
     .fetch_optional(pool)
     .await?;
 
-    Ok(result
-        .map(|row| row.max_position)
-        .expect("no max position found for category"))
+    Ok(result.map(|row| row.max_position.unwrap_or(0)))
 }
 
 pub async fn add_project(pool: &MySqlPool, name: String, category: String) -> anyhow::Result<u64> {
@@ -54,7 +53,10 @@ pub async fn add_project(pool: &MySqlPool, name: String, category: String) -> an
     .await?
     .last_insert_id();
 
-    println!("Database: added {} to {} at position {} with id {}", name, category, position, project_id);
+    println!(
+        "Database: added {} to {} at position {} with id {}",
+        name, category, position, project_id
+    );
 
     Ok(project_id)
 }
@@ -99,7 +101,10 @@ pub async fn delete_project(pool: &MySqlPool, id: u64, category: String) -> anyh
 
     transaction.commit().await?;
 
-    println!("Database: deleted project from {} at position {} with id: {}", category, deleted_project_position, id);
+    println!(
+        "Database: deleted project from {} at position {} with id {}",
+        category, deleted_project_position, id
+    );
 
     Ok(())
 }

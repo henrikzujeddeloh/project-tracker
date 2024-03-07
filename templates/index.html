@@ -8,20 +8,24 @@
     <title>Project Tracker</title>
 </head>
 
-<body>
-    <h1 class="text-3xl font-bold underline">Project Tracker</h1>
-    <div class="flex h-screen">
+<body class="m-4">
+    <h1 class="text-3xl font-bold underline mb-4">Project Tracker</h1>
+    <div class="flex flex-col md:flex-row">
 
         <!-- Left Side -->
-        {% set category_name = left_category %}
-        {% include "list.html" %}
+        <div class="w-full md:w-1/2 mr-0 md:mr-2">
+            {% set category_name = left_category %}
+            {% include "list.html" %}
+        </div>
 
         <!-- Divider -->
-        <div class="absolute inset-0 m-auto border-r-2 border-gray-200" style="width: 1px;"></div>
+        <div class="hidden md:block border-r-2 border-gray-200" style="width: 1px;"></div>
 
         <!-- Right Side -->
-        {% set category_name = right_category %}
-        {% include "list.html" %}
+        <div class="w-full md:w-1/2 mt-4 md:mt-0 ml-0 md:ml-2">
+            {% set category_name = right_category %}
+            {% include "list.html" %}
+        </div>
 
     </div>
 </body>
