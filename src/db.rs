@@ -108,3 +108,94 @@ pub async fn delete_project(pool: &MySqlPool, id: u64, category: String) -> anyh
 
     Ok(())
 }
+
+pub async fn move_project_up(
+    pool: &MySqlPool,
+    id: u64,
+    category: String,
+    position: u64,
+) -> anyhow::Result<()> {
+
+    if position == 1 {
+        println!("Database: project with id {} already in top position", id);
+        return Ok(())
+    }
+
+    let mut transaction = pool.begin().await?;
+
+    // move the above project down
+    sqlx::query!(
+        r#"
+            UPDATE projects SET position = position + 1
+            WHERE category = ? AND position = ? - 1
+        "#,
+        category,
+        position
+    )
+    .execute(&mut *transaction)
+    .await?;
+
+    // move the current project up
+    sqlx::query!(
+        r#"
+            UPDATE projects SET position = position - 1
+            WHERE id = ?
+        "#,
+        id
+    )
+    .execute(&mut *transaction)
+    .await?;
+
+    transaction.commit().await?;
+
+    println!("Database: movd project with id {} up to position {}", id, position-1);
+
+    Ok(())
+}
+
+
+pub async fn move_project_down(
+    pool: &MySqlPool,
+    id: u64,
+    category: String,
+    position: u64,
+) -> anyhow::Result<()> {
+
+    let highest_position = get_highest_position_by_category(pool, &category).await?.map_or(1, |pos| pos);
+
+    if position == highest_position {
+        println!("Database: project with id {} already in bottom position ({})", id, position);
+        return Ok(())
+    }
+
+    let mut transaction = pool.begin().await?;
+
+    // move the below project up
+    sqlx::query!(
+        r#"
+            UPDATE projects SET position = position - 1
+            WHERE category = ? AND position = ? + 1
+        "#,
+        category,
+        position
+    )
+    .execute(&mut *transaction)
+    .await?;
+
+    // move the current project down
+    sqlx::query!(
+        r#"
+            UPDATE projects SET position = position + 1
+            WHERE id = ?
+        "#,
+        id
+    )
+    .execute(&mut *transaction)
+    .await?;
+
+    transaction.commit().await?;
+
+    println!("Database: moved project with id {} down to position {}", id, position+1);
+
+    Ok(())
+}

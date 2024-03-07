@@ -24,6 +24,8 @@ async fn main() -> anyhow::Result<()> {
         .route("/", get(handlers::index_handler))
         .route("/add", post(handlers::add_handler))
         .route("/delete", post(handlers::delete_handler))
+        .route("/up", post(handlers::up_handler))
+        .route("/down", post(handlers::down_handler))
         .nest_service("/css", ServeDir::new("css"))
         .with_state(pool);
 

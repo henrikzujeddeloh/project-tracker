@@ -67,3 +67,30 @@ pub async fn delete_handler(
     db::delete_project(&pool, query.id, query.category).await?;
     Ok(Redirect::to("/"))
 }
+
+
+// MOVE HANDLER
+#[derive(Deserialize, Debug)]
+pub struct MoveQuery {
+    pub id: u64,
+    pub category: String,
+    pub position: u64,
+}
+
+#[axum_macros::debug_handler]
+pub async fn up_handler(
+    State(pool): State<MySqlPool>,
+    Form(query): Form<MoveQuery>,
+) -> Result<impl IntoResponse, error::AppError> {
+    db::move_project_up(&pool, query.id, query.category, query.position).await?;
+    Ok(Redirect::to("/"))
+}
+
+#[axum_macros::debug_handler]
+pub async fn down_handler(
+    State(pool): State<MySqlPool>,
+    Form(query): Form<MoveQuery>,
+) -> Result<impl IntoResponse, error::AppError> {
+    db::move_project_down(&pool, query.id, query.category, query.position).await?;
+    Ok(Redirect::to("/"))
+}
