@@ -13,6 +13,8 @@ use crate::models;
 #[template(path = "index.html")]
 pub struct IndexResponse {
     pub projects: Vec<models::Project>,
+    pub left_category: &'static str,
+    pub right_category: &'static str,
 }
 
 #[axum_macros::debug_handler]
@@ -20,7 +22,11 @@ pub async fn index_handler(
     State(pool): State<MySqlPool>,
 ) -> Result<IndexResponse, error::AppError> {
     let project_list = db::get_projects(&pool).await?;
-    return Ok(IndexResponse { projects: project_list });
+    return Ok(IndexResponse { 
+        projects: project_list,
+        left_category: "Personal",
+        right_category: "Professional",
+    });
 }
 
 #[derive(Deserialize, Debug)]
@@ -36,7 +42,11 @@ pub async fn add_handler(
 ) -> Result<IndexResponse, error::AppError> {
     db::add_project(&pool, query.name, query.category).await?;
     let project_list = db::get_projects(&pool).await?;
-    return Ok(IndexResponse { projects: project_list });
+    return Ok(IndexResponse { 
+        projects: project_list,
+        left_category: "Personal",
+        right_category: "Professional",
+    });
 }
 
 
@@ -53,5 +63,9 @@ pub async fn delete_handler(
 ) -> Result<IndexResponse, error::AppError> {
     db::delete_project(&pool, query.id, query.category).await?;
     let project_list = db::get_projects(&pool).await?;
-    return Ok(IndexResponse { projects: project_list });
+    return Ok(IndexResponse { 
+        projects: project_list,
+        left_category: "Personal",
+        right_category: "Professional",
+    });
 }

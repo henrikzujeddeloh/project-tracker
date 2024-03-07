@@ -10,7 +10,20 @@
 
 <body>
     <h1 class="text-3xl font-bold underline">Project Tracker</h1>
-    {% include "list.html" %}
+    <div class="flex h-screen">
+
+        <!-- Left Side -->
+        {% set category_name = left_category %}
+        {% include "list.html" %}
+
+        <!-- Divider -->
+        <div class="absolute inset-0 m-auto border-r-2 border-gray-200" style="width: 1px;"></div>
+
+        <!-- Right Side -->
+        {% set category_name = right_category %}
+        {% include "list.html" %}
+
+    </div>
 </body>
 
 </html>
