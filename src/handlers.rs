@@ -56,6 +56,7 @@ pub async fn add_handler(
 pub struct DeleteQuery {
     pub id: u64,
     pub category: String,
+    pub position: u64,
 }
 
 #[axum_macros::debug_handler]
@@ -64,7 +65,7 @@ pub async fn delete_handler(
     Form(query): Form<DeleteQuery>,
 ) -> Result<impl IntoResponse, error::AppError> {
     // TODO: add delete confirmation
-    db::delete_project(&pool, query.id, query.category).await?;
+    db::delete_project(&pool, query.id, query.category, query.position).await?;
     Ok(Redirect::to("/"))
 }
 

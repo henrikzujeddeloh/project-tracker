@@ -61,20 +61,8 @@ pub async fn add_project(pool: &MySqlPool, name: String, category: String) -> an
     Ok(project_id)
 }
 
-pub async fn delete_project(pool: &MySqlPool, id: u64, category: String) -> anyhow::Result<()> {
+pub async fn delete_project(pool: &MySqlPool, id: u64, category: String, position: u64) -> anyhow::Result<()> {
     let mut transaction = pool.begin().await?;
-
-    // find position of the project to be deleted
-    let deleted_project_position = sqlx::query!(
-        r#"
-            SELECT position FROM projects
-            WHERE id = ?
-        "#,
-        id
-    )
-    .fetch_one(&mut *transaction)
-    .await?
-    .position;
 
     // delete the project from the SQL table
     sqlx::query!(
@@ -94,7 +82,7 @@ pub async fn delete_project(pool: &MySqlPool, id: u64, category: String) -> anyh
             AND position > ?
         "#,
         category,
-        deleted_project_position
+        position
     )
     .execute(&mut *transaction)
     .await?;
@@ -103,7 +91,7 @@ pub async fn delete_project(pool: &MySqlPool, id: u64, category: String) -> anyh
 
     println!(
         "Database: deleted project from {} at position {} with id {}",
-        category, deleted_project_position, id
+        category, position, id
     );
 
     Ok(())
