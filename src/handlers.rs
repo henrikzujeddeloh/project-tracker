@@ -34,6 +34,25 @@ pub async fn index_handler(
     });
 }
 
+
+// START HANDLER
+#[derive(Deserialize, Debug)]
+pub struct StartQuery {
+    pub id: u64,
+    pub category: String,
+    pub position: u64,
+}
+
+#[axum_macros::debug_handler]
+pub async fn start_handler(
+    State(pool): State<MySqlPool>,
+    Form(query): Form<DeleteQuery>,
+) -> Result<impl IntoResponse, error::AppError> {
+    // TODO: add delete confirmation
+    db::start_project(&pool, query.id, query.category, query.position).await?;
+    Ok(Redirect::to("/"))
+}
+
 // ADD HANDLER
 #[derive(Deserialize, Debug)]
 pub struct AddQuery {

@@ -18,6 +18,50 @@ pub async fn get_projects(pool: &MySqlPool) -> anyhow::Result<Vec<models::Projec
     Ok(projects)
 }
 
+pub async fn start_project(
+    pool: &MySqlPool,
+    id: u64,
+    category: String,
+    position: u64,
+) -> anyhow::Result<()> {
+    let mut transaction = pool.begin().await?;
+
+    // update the status of the started project to 1 and move to position 1
+    sqlx::query!(
+        r#"
+            UPDATE projects SET status = 1, position = 1
+            WHERE id = ?
+        "#,
+        id
+    )
+    .execute(&mut *transaction)
+    .await?;
+
+    // move all projects before started project position back
+    sqlx::query!(
+        r#"
+            UPDATE projects SET position = position + 1
+            WHERE category = ?
+            AND position <= ?
+            AND id != ?
+        "#,
+        category,
+        position,
+        id
+    )
+    .execute(&mut *transaction)
+    .await?;
+
+    transaction.commit().await?;
+
+    println!(
+        "Database: started project with id {}",
+        id
+    );
+
+    Ok(())
+}
+
 pub async fn get_highest_position_by_category(
     pool: &MySqlPool,
     category: &str,
@@ -61,7 +105,12 @@ pub async fn add_project(pool: &MySqlPool, name: String, category: String) -> an
     Ok(project_id)
 }
 
-pub async fn delete_project(pool: &MySqlPool, id: u64, category: String, position: u64) -> anyhow::Result<()> {
+pub async fn delete_project(
+    pool: &MySqlPool,
+    id: u64,
+    category: String,
+    position: u64,
+) -> anyhow::Result<()> {
     let mut transaction = pool.begin().await?;
 
     // delete the project from the SQL table
@@ -78,7 +127,8 @@ pub async fn delete_project(pool: &MySqlPool, id: u64, category: String, positio
     // adjust the positions of the remaining projects
     sqlx::query!(
         r#"
-            UPDATE projects SET position = position - 1 WHERE category = ?
+            UPDATE projects SET position = position - 1
+            WHERE category = ?
             AND position > ?
         "#,
         category,
@@ -103,10 +153,9 @@ pub async fn move_project_up(
     category: String,
     position: u64,
 ) -> anyhow::Result<()> {
-
     if position == 1 {
         println!("Database: project with id {} already in top position", id);
-        return Ok(())
+        return Ok(());
     }
 
     let mut transaction = pool.begin().await?;
@@ -136,11 +185,14 @@ pub async fn move_project_up(
 
     transaction.commit().await?;
 
-    println!("Database: movd project with id {} up to position {}", id, position-1);
+    println!(
+        "Database: movd project with id {} up to position {}",
+        id,
+        position - 1
+    );
 
     Ok(())
 }
-
 
 pub async fn move_project_down(
     pool: &MySqlPool,
@@ -148,12 +200,16 @@ pub async fn move_project_down(
     category: String,
     position: u64,
 ) -> anyhow::Result<()> {
-
-    let highest_position = get_highest_position_by_category(pool, &category).await?.map_or(1, |pos| pos);
+    let highest_position = get_highest_position_by_category(pool, &category)
+        .await?
+        .map_or(1, |pos| pos);
 
     if position == highest_position {
-        println!("Database: project with id {} already in bottom position ({})", id, position);
-        return Ok(())
+        println!(
+            "Database: project with id {} already in bottom position ({})",
+            id, position
+        );
+        return Ok(());
     }
 
     let mut transaction = pool.begin().await?;
@@ -183,7 +239,11 @@ pub async fn move_project_down(
 
     transaction.commit().await?;
 
-    println!("Database: moved project with id {} down to position {}", id, position+1);
+    println!(
+        "Database: moved project with id {} down to position {}",
+        id,
+        position + 1
+    );
 
     Ok(())
 }

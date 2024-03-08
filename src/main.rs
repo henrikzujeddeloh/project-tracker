@@ -22,11 +22,13 @@ async fn main() -> anyhow::Result<()> {
     // set up router
     let app = Router::new()
         .route("/", get(handlers::index_handler))
+        .route("/start", post(handlers::start_handler))
         .route("/add", post(handlers::add_handler))
         .route("/delete", post(handlers::delete_handler))
         .route("/up", post(handlers::up_handler))
         .route("/down", post(handlers::down_handler))
         .nest_service("/css", ServeDir::new("css"))
+        .nest_service("/assets", ServeDir::new("assets"))
         .with_state(pool);
 
     // set up listener

@@ -8,6 +8,18 @@
         <!-- project name -->
         <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">{{ project.name }}</span>
 
+        <!-- start button -->
+        {% if project.status == 0 %}
+        <form action="/start" method="POST">
+            <input type="hidden" name="id" value="{{ project.id }}" />
+            <input type="hidden" name="category" value="{{ project.category }}" />
+            <input type="hidden" name="position" value="{{ project.position }}" />
+            <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-700">
+                <i class="fa fa-play"></i>
+            </button>
+        </form>
+        {% endif %}
+
         <!-- start up/down button container -->
         <div class="flex flex-col mr-1 ml-1 items-center">
             <form action="/up" method="POST">
