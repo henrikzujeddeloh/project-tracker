@@ -20,6 +20,7 @@
         </form>
         {% endif %}
 
+        {% if project.status == 0 %}
         <!-- start up/down button container -->
         <div class="flex flex-col mr-1 ml-1 items-center">
             <form action="/up" method="POST">
@@ -39,16 +40,13 @@
                 </button>
             </form>
         </div>
+        {% endif %}
 
-        <!-- delete button -->
-        <form action="/delete" method="POST" class="flex item-center">
-            <input type="hidden" name="id" value="{{ project.id }}" />
-            <input type="hidden" name="category" value="{{ project.category }}" />
-            <input type="hidden" name="position" value="{{ project.position }}" />
-            <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700">
-                <i class="fa fa-trash-alt"></i>
-            </button>
-        </form>
+        <!-- edit button -->
+        <a href="/project/{{ project.id }}" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">
+            <i class="fa fa-edit"></i>
+        </a>
+
     </li>
     {% endif %}
     {% endfor %}

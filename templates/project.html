@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link href="/css/output.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/assets/css/all.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Tracker</title>
+</head>
+
+<body class="m-4">
+    <h1 class="text-3xl font-bold underline mb-4">{{ project.name }}</h1>
+
+
+    <!-- Text area for editing project notes -->
+    <label for="notes">Project Notes:</label>
+    <textarea id="notes" name="notes" rows="4" cols="50">{{ project.notes }}</textarea>
+
+    <!-- delete button -->
+    <form action="/delete" method="POST" class="flex item-center">
+        <input type="hidden" name="id" value="{{ project.id }}" />
+        <input type="hidden" name="category" value="{{ project.category }}" />
+        <input type="hidden" name="position" value="{{ project.position }}" />
+        <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700">
+            <i class="fa fa-trash-alt"></i>
+        </button>
+</body>
+
+</html>

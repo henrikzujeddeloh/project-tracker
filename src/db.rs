@@ -17,6 +17,23 @@ pub async fn get_projects(pool: &MySqlPool) -> anyhow::Result<Vec<models::Projec
     println!("Database: fetched {} projects", projects.len());
     Ok(projects)
 }
+// get project with id
+pub async fn get_project(pool: &MySqlPool, id: u64) -> anyhow::Result<Option<models::Project>> {
+    let project = sqlx::query_as!(
+        models::Project,
+        r#"
+            SELECT * FROM projects
+            WHERE id = ?
+        "#,
+        id
+    )
+    .fetch_optional(pool)
+    .await?;
+
+    println!("Database: fetched project with id {}", id);
+
+    Ok(project)
+}
 
 pub async fn start_project(
     pool: &MySqlPool,
@@ -54,10 +71,7 @@ pub async fn start_project(
 
     transaction.commit().await?;
 
-    println!(
-        "Database: started project with id {}",
-        id
-    );
+    println!("Database: started project with id {}", id);
 
     Ok(())
 }

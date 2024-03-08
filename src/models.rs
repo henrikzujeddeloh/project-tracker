@@ -9,7 +9,7 @@ pub struct Project {
     pub category: String,
     pub position: u64,
     pub status: u64,
-    pub notes: Option<String>,
+    pub notes: String,
     pub creation_time: DateTime<Utc>,
     pub start_time: Option<DateTime<Utc>>,
     pub completion_time: Option<DateTime<Utc>>,

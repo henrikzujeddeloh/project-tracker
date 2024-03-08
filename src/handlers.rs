@@ -1,6 +1,7 @@
 use askama::Template;
 use axum::extract::Form;
 use axum::extract::Query;
+use axum::extract::Path;
 use axum::extract::State;
 use axum::response::Redirect;
 use axum::response::IntoResponse;
@@ -48,7 +49,6 @@ pub async fn start_handler(
     State(pool): State<MySqlPool>,
     Form(query): Form<DeleteQuery>,
 ) -> Result<impl IntoResponse, error::AppError> {
-    // TODO: add delete confirmation
     db::start_project(&pool, query.id, query.category, query.position).await?;
     Ok(Redirect::to("/"))
 }
@@ -114,3 +114,21 @@ pub async fn down_handler(
     db::move_project_down(&pool, query.id, query.category, query.position).await?;
     Ok(Redirect::to("/"))
 }
+
+// PROJECT HANDLER
+#[derive(Template, Debug)]
+#[template(path = "project.html")]
+pub struct ProjectResponse {
+    pub project: models::Project,
+}
+
+#[axum_macros::debug_handler]
+pub async fn project_handler(
+    State(pool): State<MySqlPool>,
+    Path(id): Path<u64>,
+) -> Result<ProjectResponse, error::AppError> {
+    let project = db::get_project(&pool, id).await?;
+    Ok(ProjectResponse{ project: project.expect("Did not find project") })
+}
+
+
