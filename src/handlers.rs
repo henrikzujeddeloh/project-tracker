@@ -53,6 +53,36 @@ pub async fn start_handler(
     Ok(Redirect::to("/"))
 }
 
+// COMPLETE HANDLER
+#[derive(Deserialize, Debug)]
+pub struct CompleteQuery {
+    pub id: u64,
+}
+
+#[axum_macros::debug_handler]
+pub async fn complete_handler(
+    State(pool): State<MySqlPool>,
+    Form(query): Form<CompleteQuery>,
+) -> Result<impl IntoResponse, error::AppError> {
+    db::complete_project(&pool, query.id).await?;
+    Ok(Redirect::to("/completed"))
+}
+
+// COMPLETED HANDLER
+#[derive(Template, Debug)]
+#[template(path = "completed.html")]
+pub struct CompletedResponse {
+    pub projects: Vec<models::Project>,
+}
+
+#[axum_macros::debug_handler]
+pub async fn completed_handler(
+    State(pool): State<MySqlPool>,
+) -> Result<CompletedResponse, error::AppError> {
+    let project_list = db::get_projects(&pool).await?;
+    return Ok( CompletedResponse{ projects: project_list })
+}
+
 // ADD HANDLER
 #[derive(Deserialize, Debug)]
 pub struct AddQuery {

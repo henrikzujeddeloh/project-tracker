@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local, Utc};
+use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
@@ -10,7 +10,7 @@ pub struct Project {
     pub position: u64,
     pub status: u64,
     pub notes: String,
-    pub creation_time: DateTime<Utc>,
-    pub start_time: Option<DateTime<Utc>>,
-    pub completion_time: Option<DateTime<Utc>>,
+    pub creation_time: DateTime<Local>,
+    pub start_time: DateTime<Local>,
+    pub completion_time: DateTime<Local>,
 }

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link href="/css/output.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/assets/css/all.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Tracker - Completed Projects</title>
+</head>
+
+<body>
+    <h2 class="text-lg font-semibold mb-2">Completed Project</h2>
+    <ul>
+        {% for project in projects %}
+        {% if project.status == 2 %}
+        <!-- start list item -->
+        <li class="relative flex justify-between items-center border-b py-2">
+
+            <!-- project name -->
+            <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">{{ project.name }}</span>
+
+
+        </li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+</body>

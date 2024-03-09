@@ -12,10 +12,30 @@
 <body class="m-4">
     <h1 class="text-3xl font-bold underline mb-4">{{ project.name }}</h1>
 
+    <span class="">Project created on {{ project.creation_time }}</span>
+
+    {% if project.status > 0 %}
+    <span class="">Project started on {{ project.start_time }}</span>
+    {% endif %}
+
+
+    {% if project.status > 1 %}
+    <span class="">Project started on {{ project.completion_time }}</span>
+    {% endif %}
 
     <!-- Text area for editing project notes -->
     <label for="notes">Project Notes:</label>
     <textarea id="notes" name="notes" rows="4" cols="50">{{ project.notes }}</textarea>
+
+    {% if project.status == 1 %}
+    <!-- complete project button -->
+    <form action="/complete" method="POST" class="flex item-center">
+        <input type="hidden" name="id" value="{{ project.id }}" />
+        <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-700">
+            <i class="fa fa-check"></i>
+        </button>
+    </form>
+    {% endif %}
 
     <!-- delete button -->
     <form action="/delete" method="POST" class="flex item-center">
@@ -25,6 +45,7 @@
         <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700">
             <i class="fa fa-trash-alt"></i>
         </button>
+    </form>
 </body>
 
 </html>

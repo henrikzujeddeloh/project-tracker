@@ -23,6 +23,8 @@ async fn main() -> anyhow::Result<()> {
     let app = Router::new()
         .route("/", get(handlers::index_handler))
         .route("/start", post(handlers::start_handler))
+        .route("/complete", post(handlers::complete_handler))
+        .route("/completed", get(handlers::completed_handler))
         .route("/add", post(handlers::add_handler))
         .route("/delete", post(handlers::delete_handler))
         .route("/up", post(handlers::up_handler))

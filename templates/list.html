@@ -2,6 +2,7 @@
 <ul>
     {% for project in projects %}
     {% if project.category == category_name %}
+    {% if project.status != 2 %}
     <!-- start list item -->
     <li class="relative flex justify-between items-center border-b py-2">
 
@@ -10,7 +11,7 @@
 
         <!-- start button -->
         {% if project.status == 0 %}
-        <form action="/start" method="POST">
+        <form action="/start" method="POST" class="mr-1 ml-1">
             <input type="hidden" name="id" value="{{ project.id }}" />
             <input type="hidden" name="category" value="{{ project.category }}" />
             <input type="hidden" name="position" value="{{ project.position }}" />
@@ -19,6 +20,12 @@
             </button>
         </form>
         {% endif %}
+
+        <!-- edit button -->
+        <a href="/project/{{ project.id }}"
+            class="bg-blue-500 text-white px-2 py-1 mr-1 ml-1 rounded hover:bg-blue-700">
+            <i class="fa fa-edit"></i>
+        </a>
 
         {% if project.status == 0 %}
         <!-- start up/down button container -->
@@ -42,12 +49,9 @@
         </div>
         {% endif %}
 
-        <!-- edit button -->
-        <a href="/project/{{ project.id }}" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">
-            <i class="fa fa-edit"></i>
-        </a>
 
     </li>
+    {% endif %}
     {% endif %}
     {% endfor %}
 </ul>

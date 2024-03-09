@@ -1,4 +1,4 @@
-use sqlx::mysql::MySqlPool;
+use sqlx::{any, mysql::MySqlPool};
 
 use crate::models;
 
@@ -72,6 +72,22 @@ pub async fn start_project(
     transaction.commit().await?;
 
     println!("Database: started project with id {}", id);
+
+    Ok(())
+}
+
+pub async fn complete_project(pool: &MySqlPool, id: u64) -> anyhow::Result<()> {
+    sqlx::query!(
+        r#"
+            UPDATE projects SET status = 2
+            WHERE id = ?
+        "#,
+        id
+    )
+    .execute(pool)
+    .await?;
+
+    print!("Database: completed project with id {}", id);
 
     Ok(())
 }
@@ -200,7 +216,7 @@ pub async fn move_project_up(
     transaction.commit().await?;
 
     println!(
-        "Database: movd project with id {} up to position {}",
+        "Database: moved project with id {} up to position {}",
         id,
         position - 1
     );
