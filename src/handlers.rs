@@ -1,15 +1,15 @@
 use askama::Template;
 use axum::extract::Form;
-use axum::extract::Query;
 use axum::extract::Path;
+use axum::extract::Query;
 use axum::extract::State;
-use axum::response::Redirect;
 use axum::response::IntoResponse;
+use axum::response::Redirect;
 use serde::Deserialize;
 use sqlx::mysql::MySqlPool;
 
-use crate::error;
 use crate::db;
+use crate::error;
 use crate::models;
 
 const LEFT_CATEGORY: &str = "Personal";
@@ -28,13 +28,12 @@ pub async fn index_handler(
     State(pool): State<MySqlPool>,
 ) -> Result<IndexResponse, error::AppError> {
     let project_list = db::get_projects(&pool).await?;
-    return Ok(IndexResponse { 
+    return Ok(IndexResponse {
         projects: project_list,
         left_category: LEFT_CATEGORY,
         right_category: RIGHT_CATEGORY,
     });
 }
-
 
 // START HANDLER
 #[derive(Deserialize, Debug)]
@@ -80,7 +79,9 @@ pub async fn completed_handler(
     State(pool): State<MySqlPool>,
 ) -> Result<CompletedResponse, error::AppError> {
     let project_list = db::get_projects(&pool).await?;
-    return Ok( CompletedResponse{ projects: project_list })
+    return Ok(CompletedResponse {
+        projects: project_list,
+    });
 }
 
 // ADD HANDLER
@@ -99,7 +100,6 @@ pub async fn add_handler(
     Ok(Redirect::to("/"))
 }
 
-
 // DELETE HANDLER
 #[derive(Deserialize, Debug)]
 pub struct DeleteQuery {
@@ -117,7 +117,6 @@ pub async fn delete_handler(
     db::delete_project(&pool, query.id, query.category, query.position).await?;
     Ok(Redirect::to("/"))
 }
-
 
 // MOVE HANDLER
 #[derive(Deserialize, Debug)]
@@ -145,6 +144,22 @@ pub async fn down_handler(
     Ok(Redirect::to("/"))
 }
 
+// UPDATE NOTES HANDLER
+#[derive(Deserialize, Debug)]
+pub struct UpdateNotesQuery {
+    pub id: u64,
+    pub notes: String,
+}
+
+#[axum_macros::debug_handler]
+pub async fn update_notes_handler(
+    State(pool): State<MySqlPool>,
+    Form(query): Form<UpdateNotesQuery>,
+) -> Result<impl IntoResponse, error::AppError> {
+    db::update_notes(&pool, query.id, query.notes).await?;
+    Ok(Redirect::to("/"))
+}
+
 // PROJECT HANDLER
 #[derive(Template, Debug)]
 #[template(path = "project.html")]
@@ -158,7 +173,7 @@ pub async fn project_handler(
     Path(id): Path<u64>,
 ) -> Result<ProjectResponse, error::AppError> {
     let project = db::get_project(&pool, id).await?;
-    Ok(ProjectResponse{ project: project.expect("Did not find project") })
+    Ok(ProjectResponse {
+        project: project.expect("Did not find project"),
+    })
 }
-
-

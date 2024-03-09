@@ -1,4 +1,5 @@
-use sqlx::{any, mysql::MySqlPool};
+use chrono::Utc;
+use sqlx::mysql::MySqlPool;
 
 use crate::models;
 
@@ -43,12 +44,15 @@ pub async fn start_project(
 ) -> anyhow::Result<()> {
     let mut transaction = pool.begin().await?;
 
+    let current_time = Utc::now();
     // update the status of the started project to 1 and move to position 1
     sqlx::query!(
         r#"
-            UPDATE projects SET status = 1, position = 1
+            UPDATE projects 
+            SET status = 1, position = 1, start_time = ?
             WHERE id = ?
         "#,
+        current_time,
         id
     )
     .execute(&mut *transaction)
@@ -274,6 +278,23 @@ pub async fn move_project_down(
         id,
         position + 1
     );
+
+    Ok(())
+}
+
+pub async fn update_notes(pool: &MySqlPool, id: u64, notes: String) -> anyhow::Result<()> {
+    sqlx::query!(
+        r#"
+            UPDATE projects SET notes = ?
+            WHERE id = ?
+        "#,
+        notes,
+        id
+    )
+    .execute(pool)
+    .await?;
+
+    print!("Database: update notes for project with id {}", id);
 
     Ok(())
 }

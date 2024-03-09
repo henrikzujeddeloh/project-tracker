@@ -29,6 +29,7 @@ async fn main() -> anyhow::Result<()> {
         .route("/delete", post(handlers::delete_handler))
         .route("/up", post(handlers::up_handler))
         .route("/down", post(handlers::down_handler))
+        .route("/update_notes", post(handlers::update_notes_handler))
         .route("/project/:id", get(handlers::project_handler))
         .nest_service("/css", ServeDir::new("css"))
         .nest_service("/assets", ServeDir::new("assets"))
