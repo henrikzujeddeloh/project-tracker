@@ -12,6 +12,7 @@ mod models;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    println!("Server Started");
     // read .env file
     dotenv().ok();
 

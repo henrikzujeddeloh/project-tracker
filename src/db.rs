@@ -81,11 +81,13 @@ pub async fn start_project(
 }
 
 pub async fn complete_project(pool: &MySqlPool, id: u64) -> anyhow::Result<()> {
+    let current_time = Utc::now();
     sqlx::query!(
         r#"
-            UPDATE projects SET status = 2
+            UPDATE projects SET status = 2, completion_time = ?
             WHERE id = ?
         "#,
+        current_time,
         id
     )
     .execute(pool)

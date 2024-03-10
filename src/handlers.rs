@@ -1,7 +1,6 @@
 use askama::Template;
 use axum::extract::Form;
 use axum::extract::Path;
-use axum::extract::Query;
 use axum::extract::State;
 use axum::response::IntoResponse;
 use axum::response::Redirect;
