@@ -10,22 +10,22 @@
 </head>
 
 <body class="m-4">
-    <h1 class="text-3xl font-bold underline mb-4">{{ project.name }}</h1>
+    <h1 class="text-3xl font-bold mb-4">{{ project.name }}</h1>
     <a href="/" class="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-700 mb-4">
         Back
     </a>
 
-    <!-- Creation, Start and Complete times -->
+    <!-- Creation, Start and Complete dates -->
     <div class="flex flex-col mb-4 mt-4">
 
-        <span>Project created on: {{ project.creation_time }}</span>
+        <span>Created: {{ project.creation_date }}</span>
 
         {% if project.status > 0 %}
-        <span>Project started on: {{ project.start_time }}</span>
+        <span>Started: {{ project.start_date }}</span>
         {% endif %}
 
         {% if project.status > 1 %}
-        <span>Project started on: {{ project.completion_time }}</span>
+        <span>Completed: {{ project.completion_date }}</span>
         {% endif %}
 
     </div>

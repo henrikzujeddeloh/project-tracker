@@ -14,6 +14,7 @@ use crate::models;
 const LEFT_CATEGORY: &str = "Personal";
 const RIGHT_CATEGORY: &str = "Professional";
 
+// INDEX HANDLER
 #[derive(Template, Debug)]
 #[template(path = "index.html")]
 pub struct IndexResponse {

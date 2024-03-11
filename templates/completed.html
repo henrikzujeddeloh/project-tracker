@@ -9,17 +9,41 @@
     <title>Project Tracker - Completed Projects</title>
 </head>
 
-<body>
-    <h2 class="text-lg font-semibold mb-2">Completed Project</h2>
+<body class="m-4">
+    <h2 class="text-3xl font-semibold mb-2">Completed Projects</h2>
+    <a href="/" class="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-700 mb-4">
+        Back
+    </a>
     <ul>
+        <li class="relative flex justify-between items-center border-b py-2">
+            <span class="flex-1 overflow-hidden font-semibold">Project</span>
+            <span class="flex-1 overflow-hidden font-semibold">Category</span>
+            <span class="flex-1 overflow-hidden font-semibold">Completion Date</span>
+            <div style="width: 42px;"></div>
+        </li>
+
         {% for project in projects %}
         {% if project.status == 2 %}
+
         <!-- start list item -->
-        <li class="relative flex justify-between items-center border-b py-2">
+        <li class="flex justify-between items-center border-b py-2">
+
 
             <!-- project name -->
             <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">{{ project.name }}</span>
 
+            <!-- project category -->
+            <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">{{ project.category }}</span>
+
+            <!-- project completion date -->
+            <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">{{ project.completion_date
+                }}</span>
+
+            <!-- edit button -->
+            <a href="/project/{{ project.id }}"
+                class="bg-blue-500 text-white px-2 py-1 mr-1 ml-1 rounded hover:bg-blue-700">
+                <i class="fa fa-edit"></i>
+            </a>
 
         </li>
         {% endif %}
