@@ -16,7 +16,7 @@ services:
     depends_on:
       - mariadb
 
-  maraiadb:
+  mariadb:
     image: mariadb
     container_name: project-tracker-mariadb
     environment:
