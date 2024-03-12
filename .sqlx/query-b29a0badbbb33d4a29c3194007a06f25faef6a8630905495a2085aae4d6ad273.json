@@ -1,0 +1,113 @@
+{
+  "db_name": "MySQL",
+  "query": "\n            SELECT * FROM projects\n            ORDER BY position\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": {
+          "type": "LongLong",
+          "flags": "NOT_NULL | PRIMARY_KEY | UNSIGNED | AUTO_INCREMENT",
+          "char_set": 63,
+          "max_size": 20
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": {
+          "type": "Blob",
+          "flags": "NOT_NULL | BLOB",
+          "char_set": 224,
+          "max_size": 262140
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "category",
+        "type_info": {
+          "type": "Blob",
+          "flags": "NOT_NULL | BLOB | NO_DEFAULT_VALUE",
+          "char_set": 224,
+          "max_size": 262140
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "position",
+        "type_info": {
+          "type": "LongLong",
+          "flags": "NOT_NULL | UNSIGNED | NO_DEFAULT_VALUE",
+          "char_set": 63,
+          "max_size": 20
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "status",
+        "type_info": {
+          "type": "LongLong",
+          "flags": "NOT_NULL | UNSIGNED",
+          "char_set": 63,
+          "max_size": 20
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "notes",
+        "type_info": {
+          "type": "Blob",
+          "flags": "NOT_NULL | BLOB",
+          "char_set": 224,
+          "max_size": 262140
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "creation_date",
+        "type_info": {
+          "type": "Date",
+          "flags": "NOT_NULL | BINARY",
+          "char_set": 63,
+          "max_size": 10
+        }
+      },
+      {
+        "ordinal": 7,
+        "name": "start_date",
+        "type_info": {
+          "type": "Date",
+          "flags": "NOT_NULL | BINARY",
+          "char_set": 63,
+          "max_size": 10
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "completion_date",
+        "type_info": {
+          "type": "Date",
+          "flags": "NOT_NULL | BINARY",
+          "char_set": 63,
+          "max_size": 10
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "b29a0badbbb33d4a29c3194007a06f25faef6a8630905495a2085aae4d6ad273"
+}

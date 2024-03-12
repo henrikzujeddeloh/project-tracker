@@ -1,0 +1,25 @@
+{
+  "db_name": "MySQL",
+  "query": "\n            SELECT MAX(position) AS max_position\n            FROM projects\n            WHERE category = ?\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "max_position",
+        "type_info": {
+          "type": "LongLong",
+          "flags": "UNSIGNED | BINARY",
+          "char_set": 63,
+          "max_size": 20
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "b7dd3ff7b664755074a503dc34094fadbadfc640c968e9f3ac8a11a0b0f3d6bf"
+}

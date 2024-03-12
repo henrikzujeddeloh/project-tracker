@@ -2,6 +2,5 @@
 .env
 Cargo.lock
 /node_modules
-/.sqlx
 .DS_Store
 /db

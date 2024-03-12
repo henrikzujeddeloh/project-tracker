@@ -1,0 +1,12 @@
+{
+  "db_name": "MySQL",
+  "query": "\n            UPDATE projects SET position = position - 1\n            WHERE category = ?\n            AND position > ?\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "b35aef8d9cd662626d2bf332898f18ebccba741d4b736411715eb2793c4b3bea"
+}

@@ -1,0 +1,12 @@
+{
+  "db_name": "MySQL",
+  "query": "\n            UPDATE projects \n            SET status = 1, position = 1, start_date = ?\n            WHERE id = ?\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "345593c5266ff79f4a27468644423790b001bf1fd90cfef4f0b3fced2fa45d4b"
+}
