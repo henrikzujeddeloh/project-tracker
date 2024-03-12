@@ -18,6 +18,7 @@ pub async fn get_projects(pool: &MySqlPool) -> anyhow::Result<Vec<models::Projec
     println!("Database: fetched {} projects", projects.len());
     Ok(projects)
 }
+
 // get project with id
 pub async fn get_project(pool: &MySqlPool, id: u64) -> anyhow::Result<Option<models::Project>> {
     let project = sqlx::query_as!(
@@ -36,6 +37,7 @@ pub async fn get_project(pool: &MySqlPool, id: u64) -> anyhow::Result<Option<mod
     Ok(project)
 }
 
+// start project
 pub async fn start_project(
     pool: &MySqlPool,
     id: u64,
@@ -80,6 +82,7 @@ pub async fn start_project(
     Ok(())
 }
 
+// complete project
 pub async fn complete_project(pool: &MySqlPool, id: u64) -> anyhow::Result<()> {
     let current_date = Local::now();
     sqlx::query!(
@@ -98,6 +101,7 @@ pub async fn complete_project(pool: &MySqlPool, id: u64) -> anyhow::Result<()> {
     Ok(())
 }
 
+// get highest position in category
 pub async fn get_highest_position_by_category(
     pool: &MySqlPool,
     category: &str,
@@ -116,6 +120,7 @@ pub async fn get_highest_position_by_category(
     Ok(result.map(|row| row.max_position.unwrap_or(0)))
 }
 
+// add project
 pub async fn add_project(pool: &MySqlPool, name: String, category: String) -> anyhow::Result<u64> {
     let highest_position = get_highest_position_by_category(pool, &category).await?;
     let position = highest_position.map_or(1, |pos| pos + 1);
@@ -141,6 +146,7 @@ pub async fn add_project(pool: &MySqlPool, name: String, category: String) -> an
     Ok(project_id)
 }
 
+// delete project
 pub async fn delete_project(
     pool: &MySqlPool,
     id: u64,
@@ -183,6 +189,7 @@ pub async fn delete_project(
     Ok(())
 }
 
+// move project up
 pub async fn move_project_up(
     pool: &MySqlPool,
     id: u64,
@@ -230,6 +237,7 @@ pub async fn move_project_up(
     Ok(())
 }
 
+// move project down
 pub async fn move_project_down(
     pool: &MySqlPool,
     id: u64,
@@ -284,6 +292,7 @@ pub async fn move_project_down(
     Ok(())
 }
 
+// update notes
 pub async fn update_notes(pool: &MySqlPool, id: u64, notes: String) -> anyhow::Result<()> {
     sqlx::query!(
         r#"

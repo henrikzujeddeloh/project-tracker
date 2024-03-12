@@ -4,13 +4,23 @@ services:
     container_name: project-tracker
     build:
       context: .
-      dockerfile: Dockerfile
     ports: 
       - "3000:3000"
     environment:
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
-      - DB_HOST=neutron.lan
+      - DB_USERNAME=projects
+      - DB_PASSWORD=projects
+      - DB_HOST=mariadb
       - DB_PORT=3306
       - DB_NAME=projects
       - TZ=Europe/Berlin
+
+  maraiadb:
+    image: mariadb
+    container_name: project-tracker-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: projects
+      MYSQL_USER: projects
+      MYSQL_PASSWORD: projects
+    volumes:
+      - ./db:/var/lib/mysql
