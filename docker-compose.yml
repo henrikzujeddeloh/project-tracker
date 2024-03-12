@@ -13,6 +13,8 @@ services:
       - DB_PORT=3306
       - DB_NAME=projects
       - TZ=Europe/Berlin
+    depends_on:
+      - mariadb
 
   maraiadb:
     image: mariadb
