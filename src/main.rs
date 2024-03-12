@@ -17,8 +17,9 @@ async fn main() -> anyhow::Result<()> {
     dotenv().ok();
 
     // connect to mysql database
-    let pool = MySqlPool::connect(&env::var("DATABASE_URL")?).await?;
-    println!("Connected to database: {}", &env::var("DATABASE_URL")?);
+    let database_url = format!("mysql://{}:{}@{}:{}/{}", &env::var("DB_USERNAME")?, &env::var("DB_PASSWORD")?, &env::var("DB_HOST")?, &env::var("DB_PORT")?, &env::var("DB_NAME")?);
+    let pool = MySqlPool::connect(&database_url).await?;
+    println!("Connected to database: {}", database_url);
 
     // set up router
     let app = Router::new()

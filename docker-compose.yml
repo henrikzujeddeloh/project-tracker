@@ -1,0 +1,16 @@
+services:
+  project-tracker:
+    image: project-tracker
+    container_name: project-tracker
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - "3000:3000"
+    environment:
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+      - DB_HOST=neutron.lan
+      - DB_PORT=3306
+      - DB_NAME=projects
+      - TZ=Europe/Berlin

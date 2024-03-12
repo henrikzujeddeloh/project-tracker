@@ -1,9 +1,7 @@
 #!/bin/sh
 
-# Set the database URL environment variable
-export DATABASE_URL=$DATABASE_URL
-
-export TZ=$TZ
+# set database url from environment variables
+export DATABASE_URL=mysql://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME
 
 # Run SQLx migrations
 /usr/local/bin/sqlx db create
