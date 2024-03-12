@@ -38,7 +38,7 @@ async fn main() -> anyhow::Result<()> {
         .with_state(pool);
 
     // set up listener
-    let address = "0.0.0.0:3000";
+    let address = "0.0.0.0:4200";
     let listener = tokio::net::TcpListener::bind(&address).await?;
     println!("Listening at: {}", &address);
     axum::serve(listener, app).await?;
