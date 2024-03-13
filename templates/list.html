@@ -1,4 +1,4 @@
-<h2 class="text-lg font-semibold mb-2">{{ category_name }}</h2>
+<h2 class="text-lg font-semibold mb-2 border-b py-2">{{ category_name }}</h2>
 <ul>
     {% for project in projects %}
     {% if project.category == category_name %}
@@ -7,7 +7,7 @@
     <li class="relative flex justify-between items-center border-b py-2">
 
         <!-- project name -->
-        <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">{{ project.name }}</span>
+        <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap {% if project.status ==1 %}font-semibold{% endif %}">{{ project.name }}</span>
 
         <!-- start button -->
         {% if project.status == 0 %}
@@ -48,7 +48,6 @@
             </form>
         </div>
         {% endif %}
-
 
     </li>
     {% endif %}
