@@ -1,6 +1,5 @@
 /target
 .env
-Cargo.lock
 /node_modules
 .DS_Store
 /db
