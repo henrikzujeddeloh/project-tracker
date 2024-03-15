@@ -3,7 +3,7 @@ FROM rust:latest as build
 RUN cargo install sqlx-cli
 
 # Install Node.js and npm
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs
 
 WORKDIR /usr/src/project-tracker
@@ -43,11 +43,14 @@ COPY --from=build /usr/local/cargo/bin/sqlx /usr/local/bin/
 
 COPY migrations/ ./migrations/
 COPY js/ ./js/
-# Ensure you copy the built CSS, not the source
+
+# copy tailwind output CSS
 COPY --from=build /usr/src/project-tracker/css/output.css ./css/
 # Copy the Font Awesome fonts and CSS
 COPY --from=build /usr/src/project-tracker/node_modules/@fortawesome/fontawesome-free/webfonts ./assets/webfonts/
 COPY --from=build /usr/src/project-tracker/node_modules/@fortawesome/fontawesome-free/css ./assets/css/
+# Copy htmx.js
+COPY --from=build /usr/src/project-tracker/node_modules/htmx.org/dist/htmx.min.js ./node_modules/htmx.org/dist/htmx.min.js
 
 EXPOSE 4200
 

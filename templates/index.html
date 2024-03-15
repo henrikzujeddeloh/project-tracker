@@ -5,9 +5,7 @@
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="/css/output.css" />
     <link rel="stylesheet" href="/assets/css/all.css">
-    <script src="https://unpkg.com/htmx.org@1.9.10"
-        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
-        crossorigin="anonymous"></script>
+    <script src="/node_modules/htmx.org/dist/htmx.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Tracker</title>
 </head>
@@ -26,8 +24,10 @@
             {% set category_name = left_category %}
             <h2 class="text-lg font-semibold mb-2 border-b py-2">{{ category_name }}</h2>
             {% include "list.html" %}
-            <form hx-post="/add" hx-target="#project-list-{{ category_name }}" hx-swap="innerHTML"
-                class="mt-4 flex items-center">
+
+            <!-- add project form -->
+            <form hx-post="/add" hx-target="#project-list-{{ category_name }}" hx-swap="outerHTML"
+                hx-on::after-request="if(event.detail.successful) this.reset()" class="mt-4 flex items-center">
                 <input type="text" id="name" name="name"
                     class="ml-2 border border-gray-300 rounded-md px-2 py-1 flex-1" />
                 <input type="hidden" id="category" name="category" value="{{ category_name }}" />
@@ -44,8 +44,10 @@
             {% set category_name = right_category %}
             <h2 class="text-lg font-semibold mb-2 border-b py-2">{{ category_name }}</h2>
             {% include "list.html" %}
-            <form hx-post="/add" hx-target="#project-list-{{ category_name }}" hx-swap="innerHTML"
-                class="mt-4 flex items-center">
+
+            <!-- add project form -->
+            <form hx-post="/add" hx-target="#project-list-{{ category_name }}" hx-swap="outerHTML"
+                hx-on::after-request="if(event.detail.successful) this.reset()" class="mt-4 flex items-center">
                 <input type="text" id="name" name="name"
                     class="ml-2 border border-gray-300 rounded-md px-2 py-1 flex-1" />
                 <input type="hidden" id="category" name="category" value="{{ category_name }}" />

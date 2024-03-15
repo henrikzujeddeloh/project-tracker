@@ -16,21 +16,40 @@ const LEFT_CATEGORY: &str = "Personal";
 const RIGHT_CATEGORY: &str = "Professional";
 
 
-// INDEX HANDLER
 #[derive(Template, Debug)]
 #[template(path = "index.html")]
-pub struct IndexResponse {
+pub struct IndexTemplate {
     pub projects: Vec<models::Project>,
     pub left_category: &'static str,
     pub right_category: &'static str,
 }
 
+#[derive(Template, Debug)]
+#[template(path = "completed.html")]
+pub struct CompletedTemplate {
+    pub projects: Vec<models::Project>,
+}
+
+#[derive(Template, Debug)]
+#[template(path = "list.html")]
+struct ProjectListTemplate<'a> {
+    projects: Vec<models::Project>,
+    category_name: &'a str,
+}
+
+#[derive(Template, Debug)]
+#[template(path = "project.html")]
+pub struct ProjectTemplate {
+    pub project: models::Project,
+}
+
+// INDEX HANDLER
 #[axum_macros::debug_handler]
 pub async fn index_handler(
     State(pool): State<MySqlPool>,
-) -> Result<IndexResponse, error::AppError> {
+) -> Result<IndexTemplate, error::AppError> {
     let project_list = db::get_projects(&pool).await?;
-    return Ok(IndexResponse {
+    return Ok(IndexTemplate {
         projects: project_list,
         left_category: LEFT_CATEGORY,
         right_category: RIGHT_CATEGORY,
@@ -76,30 +95,17 @@ pub async fn complete_handler(
 }
 
 // COMPLETED HANDLER
-#[derive(Template, Debug)]
-#[template(path = "completed.html")]
-pub struct CompletedResponse {
-    pub projects: Vec<models::Project>,
-}
-
 #[axum_macros::debug_handler]
 pub async fn completed_handler(
     State(pool): State<MySqlPool>,
-) -> Result<CompletedResponse, error::AppError> {
+) -> Result<CompletedTemplate, error::AppError> {
     let project_list = db::get_projects(&pool).await?;
-    return Ok(CompletedResponse {
+    return Ok(CompletedTemplate {
         projects: project_list,
     });
 }
 
 // ADD HANDLER
-#[derive(Template, Debug)]
-#[template(path = "list.html")]
-struct ProjectListTemplate<'a> {
-    projects: Vec<models::Project>,
-    category_name: &'a str,
-}
-
 #[derive(Deserialize, Debug)]
 pub struct AddQuery {
     pub name: String,
@@ -195,19 +201,13 @@ pub async fn update_notes_handler(
 }
 
 // PROJECT HANDLER
-#[derive(Template, Debug)]
-#[template(path = "project.html")]
-pub struct ProjectResponse {
-    pub project: models::Project,
-}
-
 #[axum_macros::debug_handler]
 pub async fn project_handler(
     State(pool): State<MySqlPool>,
     Path(id): Path<u64>,
-) -> Result<ProjectResponse, error::AppError> {
+) -> Result<ProjectTemplate, error::AppError> {
     let project = db::get_project(&pool, id).await?;
-    Ok(ProjectResponse {
+    Ok(ProjectTemplate {
         project: project.expect("Did not find project"),
     })
 }

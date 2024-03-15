@@ -36,6 +36,7 @@ async fn main() -> anyhow::Result<()> {
         .nest_service("/css", ServeDir::new("css"))
         .nest_service("/assets", ServeDir::new("assets"))
         .nest_service("/js", ServeDir::new("js"))
+        .nest_service("/node_modules", ServeDir::new("node_modules"))
         .with_state(pool);
 
     // set up listener
