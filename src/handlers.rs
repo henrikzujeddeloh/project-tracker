@@ -4,6 +4,7 @@ use axum::extract::Path;
 use axum::extract::State;
 use axum::response::IntoResponse;
 use axum::response::Redirect;
+use axum::response::Html;
 use serde::Deserialize;
 use sqlx::mysql::MySqlPool;
 
@@ -49,8 +50,14 @@ pub async fn start_handler(
     State(pool): State<MySqlPool>,
     Form(query): Form<DeleteQuery>,
 ) -> Result<impl IntoResponse, error::AppError> {
-    db::start_project(&pool, query.id, query.category, query.position).await?;
-    Ok(Redirect::to("/"))
+    db::start_project(&pool, query.id, query.category.clone(), query.position).await?;
+    let projects = db::get_projects(&pool).await?;
+    let context = ProjectListTemplate {
+        projects,
+        category_name: &query.category,
+    };
+    let html = context.render()?;
+    Ok(Html(html))
 }
 
 // COMPLETE HANDLER
@@ -86,6 +93,13 @@ pub async fn completed_handler(
 }
 
 // ADD HANDLER
+#[derive(Template, Debug)]
+#[template(path = "list.html")]
+struct ProjectListTemplate<'a> {
+    projects: Vec<models::Project>,
+    category_name: &'a str,
+}
+
 #[derive(Deserialize, Debug)]
 pub struct AddQuery {
     pub name: String,
@@ -97,8 +111,15 @@ pub async fn add_handler(
     State(pool): State<MySqlPool>,
     Form(query): Form<AddQuery>,
 ) -> Result<impl IntoResponse, error::AppError> {
-    db::add_project(&pool, query.name, query.category).await?;
-    Ok(Redirect::to("/"))
+    db::add_project(&pool, query.name, query.category.clone()).await?;
+
+    let projects = db::get_projects(&pool).await?;
+    let context = ProjectListTemplate {
+        projects,
+        category_name: &query.category,
+    };
+    let html = context.render()?;
+    Ok(Html(html))
 }
 
 // DELETE HANDLER
@@ -132,8 +153,14 @@ pub async fn up_handler(
     State(pool): State<MySqlPool>,
     Form(query): Form<MoveQuery>,
 ) -> Result<impl IntoResponse, error::AppError> {
-    db::move_project_up(&pool, query.id, query.category, query.position).await?;
-    Ok(Redirect::to("/"))
+    db::move_project_up(&pool, query.id, query.category.clone(), query.position).await?;
+    let projects = db::get_projects(&pool).await?;
+    let context = ProjectListTemplate {
+        projects,
+        category_name: &query.category,
+    };
+    let html = context.render()?;
+    Ok(Html(html))
 }
 
 #[axum_macros::debug_handler]
@@ -141,8 +168,14 @@ pub async fn down_handler(
     State(pool): State<MySqlPool>,
     Form(query): Form<MoveQuery>,
 ) -> Result<impl IntoResponse, error::AppError> {
-    db::move_project_down(&pool, query.id, query.category, query.position).await?;
-    Ok(Redirect::to("/"))
+    db::move_project_down(&pool, query.id, query.category.clone(), query.position).await?;
+    let projects = db::get_projects(&pool).await?;
+    let context = ProjectListTemplate {
+        projects,
+        category_name: &query.category,
+    };
+    let html = context.render()?;
+    Ok(Html(html))
 }
 
 // UPDATE NOTES HANDLER

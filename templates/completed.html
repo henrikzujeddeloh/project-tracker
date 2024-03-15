@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <link href="/css/output.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/output.css" />
     <link rel="stylesheet" href="/assets/css/all.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Completed Projects</title>
@@ -68,41 +68,6 @@
     </script>
     <script src="/js/timeline.js"></script>
 
+    {% include "completed_list.html" %}
 
-    <ul>
-        <li class="relative flex justify-between items-center border-b py-2">
-            <span class="flex-1 overflow-hidden font-semibold">Project</span>
-            <span class="flex-1 overflow-hidden font-semibold">Category</span>
-            <span class="flex-1 overflow-hidden font-semibold">Finished</span>
-            <div style="width: 42px;"></div>
-        </li>
-
-        {% for project in projects %}
-        {% if project.status == 2 %}
-
-        <!-- start list item -->
-        <li class="flex justify-between items-center border-b py-2">
-
-
-            <!-- project name -->
-            <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">{{ project.name }}</span>
-
-            <!-- project category -->
-            <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">{{ project.category }}</span>
-
-            <!-- project completion date -->
-            <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">{{ project.completion_date
-                }}</span>
-
-            <!-- edit button -->
-            <a href="/project/{{ project.id }}"
-                class="bg-blue-500 text-white px-2 py-1 mr-1 ml-1 rounded hover:bg-blue-700">
-                <i class="fa fa-edit"></i>
-            </a>
-
-        </li>
-
-        {% endif %}
-        {% endfor %}
-    </ul>
 </body>

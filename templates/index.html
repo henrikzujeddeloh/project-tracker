@@ -3,8 +3,11 @@
 
 <head>
     <meta charset="UTF-8" />
-    <link href="/css/output.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/output.css" />
     <link rel="stylesheet" href="/assets/css/all.css">
+    <script src="https://unpkg.com/htmx.org@1.9.10"
+        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+        crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Tracker</title>
 </head>
@@ -14,12 +17,23 @@
         <h1 class="text-3xl font-bold underline mb-4">Project Tracker</h1>
         <a href="/completed" class="text-blue-500 font-bold hover:text-blue-700">Completed</a>
     </div>
+
+    <!-- project list -->
     <div class="flex flex-col md:flex-row">
 
         <!-- Left Side -->
         <div class="w-full md:w-1/2 mr-0 md:mr-4">
             {% set category_name = left_category %}
+            <h2 class="text-lg font-semibold mb-2 border-b py-2">{{ category_name }}</h2>
             {% include "list.html" %}
+            <form hx-post="/add" hx-target="#project-list-{{ category_name }}" hx-swap="innerHTML"
+                class="mt-4 flex items-center">
+                <input type="text" id="name" name="name"
+                    class="ml-2 border border-gray-300 rounded-md px-2 py-1 flex-1" />
+                <input type="hidden" id="category" name="category" value="{{ category_name }}" />
+                <input type="submit" value="Add"
+                    class="ml-2 px-2 py-1 bg-gray-500 text-white font-semibold rounded-md border border-gray-500 hover:bg-gray-600 hover:border-gray-600" />
+            </form>
         </div>
 
         <!-- Divider -->
@@ -28,7 +42,16 @@
         <!-- Right Side -->
         <div class="w-full md:w-1/2 mt-4 md:mt-0 ml-0 md:ml-4">
             {% set category_name = right_category %}
+            <h2 class="text-lg font-semibold mb-2 border-b py-2">{{ category_name }}</h2>
             {% include "list.html" %}
+            <form hx-post="/add" hx-target="#project-list-{{ category_name }}" hx-swap="innerHTML"
+                class="mt-4 flex items-center">
+                <input type="text" id="name" name="name"
+                    class="ml-2 border border-gray-300 rounded-md px-2 py-1 flex-1" />
+                <input type="hidden" id="category" name="category" value="{{ category_name }}" />
+                <input type="submit" value="Add"
+                    class="ml-2 px-2 py-1 bg-gray-500 text-white font-semibold rounded-md border border-gray-500 hover:bg-gray-600 hover:border-gray-600" />
+            </form>
         </div>
 
     </div>

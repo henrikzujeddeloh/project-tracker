@@ -47,3 +47,7 @@ Then build the CSS file with:
 npx tailwindcss build src/input.css -o public/ouptut.css
 ```
 
+### To Do
+- Backup project list
+- Restore from backup
+- Update components using htmx
