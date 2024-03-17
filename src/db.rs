@@ -101,6 +101,23 @@ pub async fn complete_project(pool: &MySqlPool, id: u64) -> anyhow::Result<()> {
     Ok(())
 }
 
+// get completed projects
+pub async fn get_completed_projects(pool: &MySqlPool) -> anyhow::Result<Vec<models::Project>> {
+    let completed = sqlx::query_as!(
+        models::Project,
+        r#"
+            SELECT * FROM projects
+            WHERE status = 2
+            ORDER BY completion_date DESC
+        "#
+    )
+    .fetch_all(pool)
+    .await?;
+
+    println!("Database: fetched {} completed projects", completed.len());
+    Ok(completed)
+}
+
 // get highest position in category
 pub async fn get_highest_position_by_category(
     pool: &MySqlPool,

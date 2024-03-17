@@ -28,6 +28,8 @@ pub struct IndexTemplate {
 #[template(path = "completed.html")]
 pub struct CompletedTemplate {
     pub projects: Vec<models::Project>,
+    pub left_category: &'static str,
+    pub right_category: &'static str,
 }
 
 #[derive(Template, Debug)]
@@ -95,13 +97,16 @@ pub async fn complete_handler(
 }
 
 // COMPLETED HANDLER
+// TODO: load completed projects in blocks of 10
 #[axum_macros::debug_handler]
 pub async fn completed_handler(
     State(pool): State<MySqlPool>,
 ) -> Result<CompletedTemplate, error::AppError> {
-    let project_list = db::get_projects(&pool).await?;
+    let completed = db::get_completed_projects(&pool).await?;
     return Ok(CompletedTemplate {
-        projects: project_list,
+        projects: completed,
+        left_category: LEFT_CATEGORY,
+        right_category: RIGHT_CATEGORY,
     });
 }
 

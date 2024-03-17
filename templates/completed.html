@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="/css/output.css" />
     <link rel="stylesheet" href="/assets/css/all.css">
+    <script src="/node_modules/htmx.org/dist/htmx.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Completed Projects</title>
 
@@ -20,7 +21,6 @@
 
         .project-bar {
             position: absolute;
-            background-color: #4299e1;
             opacity: 0.7;
         }
 
@@ -54,17 +54,19 @@
 
     <!-- JavaScript to create timeline -->
     <script>
+        const categories = ['{{ left_category }}', '{{ right_category }}'];
+        // Array of projects with start dates, end dates, and categories
         const projects = [
-            // Array of projects with start and end dates
-            {% for project in projects %}
+        {% for project in projects %}
         {% if project.status == 2 %}
         {
             startDate: new Date('{{ project.start_date }}'),
-                endDate: new Date('{{ project.completion_date }}')
+            endDate: new Date('{{ project.completion_date }}'),
+            category: '{{ project.category }}',
         },
         {% endif %}
         {% endfor %}
-            ];
+        ];
     </script>
     <script src="/js/timeline.js"></script>
 

@@ -20,14 +20,14 @@
         </form>
         {% endif %}
         <!-- edit button -->
-        <a href="/project/{{ project.id }}"
+        <a href="/{{ project.id }}"
             class="bg-blue-500 text-white px-2 py-1 mr-1 ml-1 rounded hover:bg-blue-700">
             <i class="fa fa-edit"></i>
         </a>
         {% if project.status == 0 %}
         <!-- start up/down button container -->
         <div class="flex flex-col mr-1 ml-1 items-center">
-            <form hx-post="/up" hx-target="#project-list-{{ category_name }}" hx-swap="innerHTML">
+            <form hx-post="/up" hx-target="#project-list-{{ category_name }}" hx-swap="outerHTML">
                 <input type="hidden" name="id" value="{{ project.id }}" />
                 <input type="hidden" name="category" value="{{ project.category }}" />
                 <input type="hidden" name="position" value="{{ project.position }}" />
@@ -35,7 +35,7 @@
                     <i class="fa fa-arrow-up" style="font-size: 0.5rem;"></i>
                 </button>
             </form>
-            <form hx-post="/down" hx-target="#project-list-{{ category_name }}" hx-swap="innerHTML">
+            <form hx-post="/down" hx-target="#project-list-{{ category_name }}" hx-swap="outerHTML">
                 <input type="hidden" name="id" value="{{ project.id }}" />
                 <input type="hidden" name="category" value="{{ project.category }}" />
                 <input type="hidden" name="position" value="{{ project.position }}" />
