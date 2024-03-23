@@ -57,19 +57,27 @@
         const categories = ['{{ left_category }}', '{{ right_category }}'];
         // Array of projects with start dates, end dates, and categories
         const projects = [
-        {% for project in projects %}
+            {% for project in projects %}
         {% if project.status == 2 %}
         {
             startDate: new Date('{{ project.start_date }}'),
-            endDate: new Date('{{ project.completion_date }}'),
-            category: '{{ project.category }}',
+                endDate: new Date('{{ project.completion_date }}'),
+                    category: '{{ project.category }}',
         },
         {% endif %}
         {% endfor %}
         ];
     </script>
     <script src="/js/timeline.js"></script>
-
-    {% include "completed_list.html" %}
+    <ul>
+        <!-- heading -->
+        <li class="relative flex justify-between items-center border-b py-2">
+            <span class="flex-1 overflow-hidden font-semibold">Project</span>
+            <span class="flex-1 overflow-hidden font-semibold">Category</span>
+            <span class="flex-1 overflow-hidden font-semibold">Finished</span>
+            <div style="width: 42px;"></div>
+        </li>
+        {% include "block.html" %}
+    </ul>
 
 </body>

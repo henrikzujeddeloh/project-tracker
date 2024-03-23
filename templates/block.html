@@ -1,0 +1,19 @@
+{% for project in block %}
+<!-- start list item -->
+<li class="flex justify-between items-center border-b py-2">
+    <!-- project name -->
+    <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">{{ project.name }}</span>
+    <!-- project category -->
+    <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">{{ project.category }}</span>
+    <!-- project completion date -->
+    <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">{{ project.completion_date
+        }}</span>
+    <!-- edit button -->
+    <a href="/{{ project.id }}" class="bg-blue-500 text-white px-2 py-1 mr-1 ml-1 rounded hover:bg-blue-700">
+        <i class="fa fa-edit"></i>
+    </a>
+</li>
+{% endfor %}
+{% if more == 1 %}
+<div hx-trigger="revealed" hx-swap="outerHTML" hx-get="/completed?block={{ next_block }}"></div>
+{% endif %}

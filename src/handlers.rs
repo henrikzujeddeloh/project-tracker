@@ -1,10 +1,11 @@
 use askama::Template;
 use axum::extract::Form;
 use axum::extract::Path;
+use axum::extract::Query;
 use axum::extract::State;
+use axum::response::Html;
 use axum::response::IntoResponse;
 use axum::response::Redirect;
-use axum::response::Html;
 use serde::Deserialize;
 use sqlx::mysql::MySqlPool;
 
@@ -14,7 +15,6 @@ use crate::models;
 
 const LEFT_CATEGORY: &str = "Personal";
 const RIGHT_CATEGORY: &str = "Professional";
-
 
 #[derive(Template, Debug)]
 #[template(path = "index.html")]
@@ -28,9 +28,23 @@ pub struct IndexTemplate {
 #[template(path = "completed.html")]
 pub struct CompletedTemplate {
     pub projects: Vec<models::Project>,
+    pub block: Vec<models::Project>,
     pub left_category: &'static str,
     pub right_category: &'static str,
+    pub next_block: u64,
+    pub more: u8,
 }
+
+#[derive(Template, Debug)]
+#[template(path = "block.html")]
+pub struct BlockTemplate {
+    pub block: Vec<models::Project>,
+    pub left_category: &'static str,
+    pub right_category: &'static str,
+    pub next_block: u64,
+    pub more: u8,
+}
+
 
 #[derive(Template, Debug)]
 #[template(path = "list.html")]
@@ -93,21 +107,59 @@ pub async fn complete_handler(
     Form(query): Form<CompleteQuery>,
 ) -> Result<impl IntoResponse, error::AppError> {
     db::complete_project(&pool, query.id).await?;
-    Ok(Redirect::to("/completed"))
+    Ok(Redirect::to("/completed?block=1"))
 }
 
 // COMPLETED HANDLER
-// TODO: load completed projects in blocks of 10
+#[derive(Deserialize, Debug)]
+pub struct BlockQuery {
+    pub block: u64,
+}
+
 #[axum_macros::debug_handler]
 pub async fn completed_handler(
     State(pool): State<MySqlPool>,
-) -> Result<CompletedTemplate, error::AppError> {
-    let completed = db::get_completed_projects(&pool).await?;
-    return Ok(CompletedTemplate {
-        projects: completed,
-        left_category: LEFT_CATEGORY,
-        right_category: RIGHT_CATEGORY,
-    });
+    Query(query): Query<BlockQuery>,
+) -> Result<impl IntoResponse, error::AppError> {
+    // load completed projects html with timeline
+    if query.block == 1 {
+        let all_completed = db::get_completed_projects(&pool, 0).await?;
+        let completed_block = db::get_completed_projects(&pool, 1).await?;
+        let mut more_blocks = 1;
+        
+        if completed_block.len() < 10 {
+            more_blocks = 0;
+        }
+        let context = CompletedTemplate {
+            projects: all_completed,
+            block: completed_block,
+            left_category: LEFT_CATEGORY,
+            right_category: RIGHT_CATEGORY,
+            next_block: query.block + 1,
+            more: more_blocks
+        };
+        let html = context.render()?;
+        Ok(Html(html))
+
+        // load blocks of completed projects
+    } else {
+        let completed_block = db::get_completed_projects(&pool, query.block).await?;
+        let mut more_blocks = 1;
+        
+        if completed_block.len() < 10 {
+            more_blocks = 0;
+        }
+
+        let context = BlockTemplate {
+            block: completed_block,
+            left_category: LEFT_CATEGORY,
+            right_category: RIGHT_CATEGORY,
+            next_block: query.block + 1,
+            more: more_blocks
+        };
+        let html = context.render()?;
+        Ok(Html(html))
+    }
 }
 
 // ADD HANDLER
