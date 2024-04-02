@@ -344,3 +344,42 @@ pub async fn update_notes(pool: &MySqlPool, id: u64, notes: String) -> anyhow::R
 
     Ok(())
 }
+
+// restore database from backup file
+pub async fn restore_projects(pool: &MySqlPool, projects: Vec<models::Project>) -> anyhow::Result<()> {
+    let mut transaction = pool.begin().await?;
+
+    // delete all projects from the SQL table
+    sqlx::query!(
+        r#"
+            DELETE FROM projects
+        "#
+    )
+    .execute(&mut *transaction)
+    .await?;
+
+    // insert all projects from the backup
+    for project in &projects {
+        sqlx::query!(
+            r#"
+                INSERT INTO projects ( id, name, category, position, status, start_date, completion_date, notes )
+                VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )
+            "#,
+            project.id,
+            project.name,
+            project.category,
+            project.position,
+            project.status,
+            project.start_date,
+            project.completion_date,
+            project.notes
+        )
+        .execute(&mut *transaction)
+        .await?;
+    }
+
+    transaction.commit().await?;
+    println!("Database: restored {} projects from backup", projects.len());
+
+    Ok(())
+}

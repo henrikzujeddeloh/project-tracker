@@ -1,11 +1,16 @@
 use askama::Template;
 use axum::extract::Form;
+use axum::extract::Multipart;
 use axum::extract::Path;
 use axum::extract::Query;
 use axum::extract::State;
+use axum::body::Body;
+use axum::http::Response;
+use axum::http::StatusCode;
 use axum::response::Html;
 use axum::response::IntoResponse;
 use axum::response::Redirect;
+use chrono::Local;
 use serde::Deserialize;
 use sqlx::mysql::MySqlPool;
 
@@ -44,7 +49,6 @@ pub struct BlockTemplate {
     pub next_block: u64,
     pub more: u8,
 }
-
 
 #[derive(Template, Debug)]
 #[template(path = "list.html")]
@@ -126,7 +130,7 @@ pub async fn completed_handler(
         let all_completed = db::get_completed_projects(&pool, 0).await?;
         let completed_block = db::get_completed_projects(&pool, 1).await?;
         let mut more_blocks = 1;
-        
+
         if completed_block.len() < 10 {
             more_blocks = 0;
         }
@@ -136,7 +140,7 @@ pub async fn completed_handler(
             left_category: LEFT_CATEGORY,
             right_category: RIGHT_CATEGORY,
             next_block: query.block + 1,
-            more: more_blocks
+            more: more_blocks,
         };
         let html = context.render()?;
         Ok(Html(html))
@@ -145,7 +149,7 @@ pub async fn completed_handler(
     } else {
         let completed_block = db::get_completed_projects(&pool, query.block).await?;
         let mut more_blocks = 1;
-        
+
         if completed_block.len() < 10 {
             more_blocks = 0;
         }
@@ -155,7 +159,7 @@ pub async fn completed_handler(
             left_category: LEFT_CATEGORY,
             right_category: RIGHT_CATEGORY,
             next_block: query.block + 1,
-            more: more_blocks
+            more: more_blocks,
         };
         let html = context.render()?;
         Ok(Html(html))
@@ -267,4 +271,95 @@ pub async fn project_handler(
     Ok(ProjectTemplate {
         project: project.expect("Did not find project"),
     })
+}
+
+// BACKUP HANDLER
+#[axum_macros::debug_handler]
+pub async fn backup_handler(
+    State(pool): State<MySqlPool>,
+) -> Result<impl IntoResponse, error::AppError> {
+    let projects = db::get_projects(&pool).await?;
+    // parse projects into json
+    let projects_json: Vec<serde_json::Value> = projects
+        .into_iter()
+        .map(|project| {
+            serde_json::json!({
+                "id": project.id,
+                "name": project.name,
+                "category": project.category,
+                "position": project.position,
+                "status": project.status,
+                "notes": project.notes,
+                "creation_date": project.creation_date,
+                "start_date": project.start_date,
+                "completion_date": project.completion_date,
+            })
+        })
+        .collect();
+    // create json string
+    let json_str = serde_json::to_string(&projects_json).unwrap();
+    let filename = Local::now()
+        .format("backup_%Y-%m-%d_%H-%M-%S.json")
+        .to_string();
+    // return response with json file
+    let response = Response::builder()
+        .status(StatusCode::OK)
+        .header("Content-Type", "application/json")
+        .header(
+            "Content-Disposition",
+            format!("attachment; filename={}", filename),
+        )
+        .body(json_str)
+        .unwrap();
+    Ok(response)
+}
+
+// UPLOAD HANDLER
+#[derive(Template, Debug)]
+#[template(path = "restore.html")]
+struct RestoreTemplate {
+}
+
+#[axum_macros::debug_handler]
+pub async fn upload_handler() -> Result<impl IntoResponse, error::AppError> {
+    let context = RestoreTemplate {};
+    let html = context.render()?;
+    Ok(Html(html))
+}
+
+// RESTORE HANDLER
+#[axum_macros::debug_handler]
+pub async fn restore_handler(
+    State(pool): State<MySqlPool>,
+    mut multipart: Multipart,
+) -> Result<impl IntoResponse, error::AppError> {
+    // read multipart form data
+    while let Some(mut field) = multipart.next_field().await? {
+        if let Some(file_name) = field.file_name() {
+            if file_name.to_string().ends_with(".json") {
+                let mut bytes = Vec::new();
+                while let Some(chunk) = field.chunk().await? {
+                    bytes.extend_from_slice(&chunk);
+                }
+                // parse json and restore projects
+                let projects: Vec<models::Project> = serde_json::from_slice(&bytes)?;
+                db::restore_projects(&pool, projects).await?;
+            }
+        }
+    }
+    // return response with restore complete message
+    let response = Response::builder()
+        .status(StatusCode::OK)
+        .header("Content-Type", "text/html")
+        .body(Body::from(
+            r#"
+                Restore complete!"
+                <a href="/" class="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-700 mb-4">
+                    Back
+                </a>
+            "#
+        ))
+        .unwrap();
+
+    Ok(response)
 }

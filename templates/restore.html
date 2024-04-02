@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/output.css" />
+    <link rel="stylesheet" href="/assets/css/all.css">
+    <script src="/node_modules/htmx.org/dist/htmx.min.js"></script>
+    <title>Project Tracker - Restore</title>
+</head>
+
+<body class="m-4">
+    <h1 class="text-3xl font-bold underline mb-4">Restore</h1>
+    <form hx-post="/restore" hx-confirm="Are you sure you want to restore from backup?" enctype="multipart/form-data">
+        <input type="file" name="backup_file" accept=".json" required>
+        <button type="submit"
+            class="ml-2 px-2 py-1 bg-gray-500 text-white font-semibold rounded-md border border-gray-500 hover:bg-gray-600 hover:border-gray-600">Upload</button>
+    </form>
+</body>
+
+</html>

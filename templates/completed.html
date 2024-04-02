@@ -45,9 +45,20 @@
 
 <body class="m-4">
     <h2 class="text-3xl font-semibold mb-2">Completed Projects</h2>
-    <a href="/" class="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-700 mb-4">
-        Back
-    </a>
+    <div class="flex items-center justify-between">
+        <a href="/" class="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-700 mb-4 mr-4">
+            Back
+        </a>
+        <div class="flex items-center">
+            <a href="/backup" class="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-700 mb-4">
+                Backup
+            </a>
+                <div style="width: 10px;"></div>
+            <a href="/upload" class="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-700 mb-4">
+                Restore from Backup
+            </a>
+        </div>
+    </div>
 
     <!-- Timeline container -->
     <div class="timeline" id="timeline"></div>
