@@ -15,7 +15,7 @@ pub async fn get_projects(pool: &MySqlPool) -> anyhow::Result<Vec<models::Projec
     .fetch_all(pool)
     .await?;
 
-    println!("Database: fetched {} projects", projects.len());
+    println!("{} - Database - fetched {} projects", Local::now(), projects.len());
     Ok(projects)
 }
 
@@ -32,7 +32,7 @@ pub async fn get_project(pool: &MySqlPool, id: u64) -> anyhow::Result<Option<mod
     .fetch_optional(pool)
     .await?;
 
-    println!("Database: fetched project with id {}", id);
+    println!("{} - Database - fetched project with id {}", Local::now(), id);
 
     Ok(project)
 }
@@ -77,7 +77,7 @@ pub async fn start_project(
 
     transaction.commit().await?;
 
-    println!("Database: started project with id {}", id);
+    println!("{} - Database - started project with id {}", Local::now(), id);
 
     Ok(())
 }
@@ -96,7 +96,7 @@ pub async fn complete_project(pool: &MySqlPool, id: u64) -> anyhow::Result<()> {
     .execute(pool)
     .await?;
 
-    print!("Database: completed project with id {}", id);
+    print!("{} - Database - completed project with id {}", Local::now(), id);
 
     Ok(())
 }
@@ -124,12 +124,12 @@ pub async fn get_completed_projects(
             .skip((block - 1) as usize * 10)
             .take(10)
             .collect();
-        println!("Database: fetched block {} of completed projects", block);
+        println!("{} - Database - fetched block {} of completed projects", Local::now(), block);
         Ok(completed_block)
     } else {
         // get all completed projects for timeline
         println!(
-            "Database: fetched all ({}) completed projects",
+            "{} - Database - fetched all ({}) completed projects", Local::now(),
             completed.len()
         );
         Ok(completed)
@@ -174,8 +174,8 @@ pub async fn add_project(pool: &MySqlPool, name: String, category: String) -> an
     .last_insert_id();
 
     println!(
-        "Database: added {} to {} at position {} with id {}",
-        name, category, position, project_id
+        "{} - Database - added {} to {} at position {} with id {}",
+        Local::now(), name, category, position, project_id
     );
 
     Ok(project_id)
@@ -217,8 +217,8 @@ pub async fn delete_project(
     transaction.commit().await?;
 
     println!(
-        "Database: deleted project from {} at position {} with id {}",
-        category, position, id
+        "{} - Database - deleted project from {} at position {} with id {}",
+        Local::now(), category, position, id
     );
 
     Ok(())
@@ -232,7 +232,7 @@ pub async fn move_project_up(
     position: u64,
 ) -> anyhow::Result<()> {
     if position == 1 {
-        println!("Database: project with id {} already in top position", id);
+        println!("{} - Database - project with id {} already in top position", Local::now(), id);
         return Ok(());
     }
 
@@ -264,7 +264,8 @@ pub async fn move_project_up(
     transaction.commit().await?;
 
     println!(
-        "Database: moved project with id {} up to position {}",
+        "{} - Database: - moved project with id {} up to position {}",
+        Local::now(),
         id,
         position - 1
     );
@@ -285,8 +286,8 @@ pub async fn move_project_down(
 
     if position == highest_position {
         println!(
-            "Database: project with id {} already in bottom position ({})",
-            id, position
+            "{} - Database - project with id {} already in bottom position ({})",
+            Local::now(), id, position
         );
         return Ok(());
     }
@@ -319,7 +320,8 @@ pub async fn move_project_down(
     transaction.commit().await?;
 
     println!(
-        "Database: moved project with id {} down to position {}",
+        "{} - Database - moved project with id {} down to position {}",
+        Local::now(),
         id,
         position + 1
     );
@@ -340,7 +342,7 @@ pub async fn update_notes(pool: &MySqlPool, id: u64, notes: String) -> anyhow::R
     .execute(pool)
     .await?;
 
-    print!("Database: update notes for project with id {}", id);
+    println!("{} - Database - update notes for project with id {}", Local::now(), id);
 
     Ok(())
 }
@@ -379,7 +381,7 @@ pub async fn restore_projects(pool: &MySqlPool, projects: Vec<models::Project>) 
     }
 
     transaction.commit().await?;
-    println!("Database: restored {} projects from backup", projects.len());
+    println!("{} - Database - restored {} projects from backup", Local::now(), projects.len());
 
     Ok(())
 }
